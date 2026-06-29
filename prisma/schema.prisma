@@ -1,0 +1,34 @@
+// Prisma schema for AI Resume Roaster
+// Using PostgreSQL (or switch to sqlite for local dev)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  image         String?
+  createdAt     DateTime       @default(now())
+  roastSessions RoastSession[]
+}
+
+model RoastSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  filename    String?
+  resumeText  String?  @db.Text
+  roastResult Json
+  overallScore Int
+  roastLevel  String
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
