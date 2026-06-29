@@ -51,7 +51,10 @@ export default function UploadPage() {
       const roastRes  = await fetch('/api/roast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resumeText: uploadData.resumeText }),
+        body: JSON.stringify({
+          resumeText: uploadData.resumeText,
+          filename: selectedFile?.name || 'resume.pdf'
+        }),
       });
       const roastResult = await roastRes.json();
       if (!roastRes.ok) throw new Error(roastResult.error || 'The roast failed. Please try again.');

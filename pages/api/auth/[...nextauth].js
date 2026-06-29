@@ -52,6 +52,22 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
+    async signIn({ user }) {
+      if (user) {
+        try {
+          const { syncUser } = await import('../../../lib/db');
+          await syncUser({
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          });
+        } catch (err) {
+          console.error('[nextauth] user profile sync error:', err.message);
+        }
+      }
+      return true;
+    },
     async jwt({ token, account }) {
       if (account) {
         token.provider = account.provider;
